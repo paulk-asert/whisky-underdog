@@ -27,10 +27,11 @@ def plot = Underdog.plots()
 
 plot.correlationMatrix(df[features]).show()
 
+List firstRow = (df[features] as double[][])[0]
 plot.radar(
     features,
     [4] * features.size(),
-    (df[features] as double[][])[0].toList(),
+    firstRow,
     df['Distillery'][0]
 ).show()
 
