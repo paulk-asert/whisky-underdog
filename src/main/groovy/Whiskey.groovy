@@ -23,19 +23,16 @@ println df.schema()
 
 def features = df.columns - 'Distillery'
 
-def plot = Underdog.plots().correlationMatrix(df[features])
+def plot = Underdog.plots()
 
-plot.show()
+plot.correlationMatrix(df[features]).show()
 
-plot = Underdog
-    .plots()
-    .radar(
-        features,
-        [4] * features.size(),
-        (df[features] as double[][])[0].toList(),
-        df['Distillery'][0]
-    )
-plot.show()
+plot.radar(
+    features,
+    [4] * features.size(),
+    (df[features] as double[][])[0].toList(),
+    df['Distillery'][0]
+).show()
 
 def ml = Underdog.ml()
 def data = df[features] as double[][]
@@ -54,11 +51,9 @@ def projected = pca.apply(data)
 df['X'] = projected*.getAt(0)
 df['Y'] = projected*.getAt(1)
 
-plot = Underdog.plots()
-    .scatter(
-        df['X'],
-        df['Y'],
-        df['Cluster'],
-        'Whiskey Clusters')
-
-plot.show()
+plot.scatter(
+    df['X'],
+    df['Y'],
+    df['Cluster'],
+    'Whiskey Clusters'
+).show()
