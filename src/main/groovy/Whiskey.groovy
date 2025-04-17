@@ -27,16 +27,15 @@ def plot = Underdog.plots()
 
 plot.correlationMatrix(df[features]).show()
 
-List firstRow = (df[features] as double[][])[0]
+def data = df[features] as double[][]
 plot.radar(
     features,
     [4] * features.size(),
-    firstRow,
+    data[0].toList(),
     df['Distillery'][0]
 ).show()
 
 def ml = Underdog.ml()
-def data = df[features] as double[][]
 
 def clusters = ml.clustering.kMeans(data, nClusters: 3)
 df['Cluster'] = clusters.toList()
