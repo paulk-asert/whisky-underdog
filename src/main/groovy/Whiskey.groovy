@@ -14,8 +14,8 @@
 
 import underdog.Underdog
 
-def file = new File(getClass().classLoader.getResource('whiskey.csv').file)
-def df = Underdog.df().read_csv(file.path).drop('RowID')
+def file = getClass().getResource('whiskey.csv').file
+def df = Underdog.df().read_csv(file).drop('RowID')
 
 println df.shape()
 
