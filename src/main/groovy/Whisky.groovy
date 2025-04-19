@@ -18,7 +18,7 @@ import underdog.plots.dsl.series.RadarSeries
 
 import static underdog.plots.Options.create
 
-def file = getClass().getResource('whiskey.csv').file
+def file = getClass().getResource('whisky.csv').file
 def df = Underdog.df().read_csv(file).drop('RowID')
 
 println df.shape()
@@ -65,7 +65,7 @@ df['Cluster'] = clusters.toList()
 
 println df.agg([Distillery:'count'])
     .by('Cluster')
-    .rename('Whiskey Cluster Sizes')
+    .rename('Whisky Cluster Sizes')
 
 println 'Clusters'
 for (int i in clusters.toSet()) {
@@ -81,7 +81,7 @@ plot.scatter(
     df['X'],
     df['Y'],
     df['Cluster'],
-    'Whiskey Clusters (kMeans)'
+    'Whisky Clusters (kMeans)'
 ).show()
 
 clusters = ml.clustering.agglomerative(d, nClusters: 3)
@@ -89,7 +89,7 @@ df['Cluster'] = clusters.toList()
 
 println df.agg([Distillery:'count'])
     .by('Cluster')
-    .rename('Whiskey Cluster Sizes')
+    .rename('Whisky Cluster Sizes')
 
 println 'Clusters'
 for (int i in clusters.toSet()) {
@@ -105,5 +105,5 @@ plot.scatter(
     df['X'],
     df['Y'],
     df['Cluster'],
-    'Whiskey Clusters (agglomerative)'
+    'Whisky Clusters (agglomerative)'
 ).show()
