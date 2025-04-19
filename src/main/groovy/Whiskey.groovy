@@ -13,41 +13,67 @@
  */
 
 import underdog.Underdog
+import underdog.plots.charts.Chart
+import underdog.plots.dsl.series.RadarSeries
+
+import static underdog.plots.Options.create
 
 def file = getClass().getResource('whiskey.csv').file
 def df = Underdog.df().read_csv(file).drop('RowID')
 
 println df.shape()
-
 println df.schema()
 
 def features = df.columns - 'Distillery'
-
 def plot = Underdog.plots()
-
 plot.correlationMatrix(df[features]).show()
 
-def data = df[features] as double[][]
+def selected = df[df['Fruity'] > 2 & df['Sweetness'] > 2]
+println selected.describe()
+
 plot.radar(
     features,
     [4] * features.size(),
-    data[0].toList(),
-    df['Distillery'][0]
+    selected[features].toList()[0],
+    selected['Distillery'][0]
 ).show()
+
+def multiRadar = Chart.createGridOptions('Whisky flavor profiles', 'Somewhat sweet, somewhat fruity') +
+create {
+    radar {
+        radius('50%')
+        indicator(features.zip([4] * features.size())
+            .collect { n, mx -> [name: n, max: mx] })
+    }
+    selected.toList().each { row ->
+        series(RadarSeries) {
+            data([[name: row[0], value: row[1..-1]]])
+        }
+    }
+}.customize {
+    legend {
+        show(true)
+    }
+}
+plot.show(multiRadar)
 
 def ml = Underdog.ml()
 
-def clusters = ml.clustering.kMeans(data, nClusters: 3)
+def d = df[features] as double[][]
+def clusters = ml.clustering.kMeans(d, nClusters: 3)
 df['Cluster'] = clusters.toList()
+
+println df.agg([Distillery:'count'])
+    .by('Cluster')
+    .rename('Whiskey Cluster Sizes')
 
 println 'Clusters'
 for (int i in clusters.toSet()) {
     println "$i:${df[df['Cluster'] == i]['Distillery'].join(', ')}"
 }
 
-def pca = ml.features.pca(data, 2)
-def projected = pca.apply(data)
-
+def pca = ml.features.pca(d, 2)
+def projected = pca.apply(d)
 df['X'] = projected*.getAt(0)
 df['Y'] = projected*.getAt(1)
 
@@ -55,5 +81,29 @@ plot.scatter(
     df['X'],
     df['Y'],
     df['Cluster'],
-    'Whiskey Clusters'
+    'Whiskey Clusters (kMeans)'
+).show()
+
+clusters = ml.clustering.agglomerative(d, nClusters: 3)
+df['Cluster'] = clusters.toList()
+
+println df.agg([Distillery:'count'])
+    .by('Cluster')
+    .rename('Whiskey Cluster Sizes')
+
+println 'Clusters'
+for (int i in clusters.toSet()) {
+    println "$i:${df[df['Cluster'] == i]['Distillery'].join(', ')}"
+}
+
+pca = ml.features.pca(d, 2)
+projected = pca.apply(d)
+df['X'] = projected*.getAt(0)
+df['Y'] = projected*.getAt(1)
+
+plot.scatter(
+    df['X'],
+    df['Y'],
+    df['Cluster'],
+    'Whiskey Clusters (agglomerative)'
 ).show()

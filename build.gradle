@@ -22,7 +22,7 @@ version = '0.1'
 group = 'demo'
 
 def groovyVersion = '5.0.0-alpha-12'
-def underdogVersion = '0.1.0'
+def underdogVersion = '0.1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -34,5 +34,5 @@ dependencies {
 //    implementation "org.apache.groovy:groovy-test:$groovyVersion"
     implementation "com.github.grooviter:underdog-ml:$underdogVersion"
     implementation "com.github.grooviter:underdog-plots:$underdogVersion"
-    runtimeOnly "org.slf4j:slf4j-simple:2.0.16"
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
 }
