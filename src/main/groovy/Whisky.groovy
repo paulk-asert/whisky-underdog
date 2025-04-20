@@ -29,7 +29,7 @@ def plot = Underdog.plots()
 plot.correlationMatrix(df[features]).show()
 
 def selected = df[df['Fruity'] > 2 & df['Sweetness'] > 2]
-println selected.describe()
+println selected.shape()
 
 plot.radar(
     features,
@@ -58,7 +58,6 @@ create {
 plot.show(multiRadar)
 
 def ml = Underdog.ml()
-
 def d = df[features] as double[][]
 def clusters = ml.clustering.kMeans(d, nClusters: 3)
 df['Cluster'] = clusters.toList()
