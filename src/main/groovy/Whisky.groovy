@@ -64,12 +64,24 @@ df['Cluster'] = clusters.toList()
 
 println df.agg([Distillery:'count'])
     .by('Cluster')
+    .sort_values(false, 'Cluster')
     .rename('Whisky Cluster Sizes')
 
 println 'Clusters'
 for (int i in clusters.toSet()) {
     println "$i:${df[df['Cluster'] == i]['Distillery'].join(', ')}"
 }
+
+def summary = df
+    .agg(features.collectEntries{ f -> [f, 'mean']})
+    .by('Cluster')
+    .sort_values(false, 'Cluster')
+    .rename('Mean flavor by Cluster')
+
+(summary.columns - 'Cluster').each { c ->
+    summary[c] = summary[c](Double, Double) {it.round(3) }
+}
+println summary
 
 def pca = ml.features.pca(d, 2)
 def projected = pca.apply(d)
