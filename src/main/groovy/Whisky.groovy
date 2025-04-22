@@ -76,7 +76,7 @@ def summary = df
     .agg(features.collectEntries{ f -> [f, 'mean']})
     .by('Cluster')
     .sort_values(false, 'Cluster')
-    .rename('Mean flavor by Cluster')
+    .rename('Flavour Centroids')
 
 (summary.columns - 'Cluster').each { c ->
     summary[c] = summary[c](Double, Double) {it.round(3) }
