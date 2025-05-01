@@ -79,7 +79,7 @@ def summary = df
     .rename('Flavour Centroids')
 
 (summary.columns - 'Cluster').each { c ->
-    summary[c] = summary[c](Double, Double) {it.round(3) }
+    summary[c] = summary[c](Double, Double) { it.round(3) }
 }
 println summary
 
