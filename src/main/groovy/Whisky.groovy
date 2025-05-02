@@ -58,8 +58,8 @@ create {
 plot.show(multiRadar)
 
 def ml = Underdog.ml()
-def d = df[features] as double[][]
-def clusters = ml.clustering.kMeans(d, nClusters: 3)
+def data = df[features] as double[][]
+def clusters = ml.clustering.kMeans(data, nClusters: 3)
 df['Cluster'] = clusters.toList()
 
 println df.agg([Distillery:'count'])
@@ -83,8 +83,8 @@ def summary = df
 }
 println summary
 
-def pca = ml.features.pca(d, 2)
-def projected = pca.apply(d)
+def pca = ml.features.pca(data, 2)
+def projected = pca.apply(data)
 df['X'] = projected*.getAt(0)
 df['Y'] = projected*.getAt(1)
 
@@ -95,7 +95,7 @@ plot.scatter(
     'Whisky Clusters (kMeans)'
 ).show()
 
-clusters = ml.clustering.agglomerative(d, nClusters: 3)
+clusters = ml.clustering.agglomerative(data, nClusters: 3)
 df['Cluster'] = clusters.toList()
 
 println df.agg([Distillery:'count'])
@@ -107,8 +107,8 @@ for (int i in clusters.toSet()) {
     println "$i:${df[df['Cluster'] == i]['Distillery'].join(', ')}"
 }
 
-pca = ml.features.pca(d, 2)
-projected = pca.apply(d)
+pca = ml.features.pca(data, 2)
+projected = pca.apply(data)
 df['X'] = projected*.getAt(0)
 df['Y'] = projected*.getAt(1)
 
